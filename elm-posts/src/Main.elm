@@ -28,6 +28,7 @@ type alias User =
 type alias Model =
     { posts : List Post
     , users : List User
+    , error : Maybe String
     }
 
 
@@ -93,7 +94,7 @@ fetchUsers users =
 
 init : {} -> ( Model, Cmd Msg )
 init _ =
-    ( { posts = [], users = [] }
+    ( { posts = [], users = [], error = Nothing }
     , getPosts
     )
 
@@ -146,7 +147,7 @@ update msg model =
                     ( { model | posts = posts }, fetchUsers <| newUsers model.users posts )
 
                 Err err ->
-                    ( Debug.log (errorToString err) model, Cmd.none )
+                    ( { model | error = Just (errorToString err) }, Cmd.none )
 
         RetrievedUser result ->
             case result of
@@ -154,7 +155,7 @@ update msg model =
                     ( { model | users = model.users ++ [ user ] }, Cmd.none )
 
                 Err err ->
-                    ( Debug.log (errorToString err) model, Cmd.none )
+                    ( { model | error = Just (errorToString err) }, Cmd.none )
 
 
 
@@ -186,16 +187,17 @@ viewPost users post =
 
 view : Model -> Html Msg
 view model =
-    if List.isEmpty model.posts then
-        div [] [ text "Posts" ]
+    case model.error of
+        Just error ->
+            div [] [ text error ]
 
-    else
-        div [ class "ui container" ]
-            [ div [ class "ui relaxed divided list" ]
-                (model.posts
-                    |> List.map (viewPost model.users)
-                )
-            ]
+        _ ->
+            div [ class "ui container" ]
+                [ div [ class "ui relaxed divided list" ]
+                    (model.posts
+                        |> List.map (viewPost model.users)
+                    )
+                ]
 
 
 
