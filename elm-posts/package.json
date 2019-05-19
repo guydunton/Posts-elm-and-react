@@ -1,0 +1,16 @@
+{
+  "name": "elm-posts",
+  "version": "1.0.0",
+  "description": "elm posts example using https://jsonplaceholder.typicode.com",
+  "scripts": {
+    "build": "elm make --output=static-content/js/elm.js --optimize src/Main.elm && uglifyjs static-content/js/elm.js -c -o static-content/js/elm.js",
+    "serve": "elm-live src/Main.elm -d static-content -e node_modules/.bin/elm --open -s index.html -- --output=static-content/js/elm.js"
+  },
+  "author": "Guy Dunton",
+  "license": "ISC",
+  "devDependencies": {
+    "elm": "^0.19.0-no-deps",
+    "elm-live": "^3.4.0",
+    "uglify-js": "^3.5.13"
+  }
+}
